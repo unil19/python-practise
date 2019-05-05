@@ -1,6 +1,8 @@
 # python 基础练习
 # r不转义
+import functools
 from functools import reduce
+
 rn = r'\n'
 
 # '''可换行字符串
@@ -162,18 +164,20 @@ for i in gxf:
     pass
     # print(i)
 
+
 # 斐波那契函数的生成器
 def fib(length):
     index, prev, current = 0, 0, 1
-    while(index < length):
+    while (index < length):
         yield current
         prev, current = current, prev + current
         index += 1
 
+
 # 函数是顺序执行，遇到return语句或者最后一行函数语句就返回。
 # 而变成generator的函数，在每次调用next()的时候执行，遇到yield语句返回，再次执行时从上次返回的yield语句处继续执行。
 
-#杨辉三角
+# 杨辉三角
 def triangles():
     currentArr = [1]
     length = 1
@@ -186,9 +190,11 @@ def triangles():
             elif index == length:
                 nextArr.append(1)
             else:
-                nextArr.append(currentArr[index-1] + currentArr[index])
+                nextArr.append(currentArr[index - 1] + currentArr[index])
         currentArr = nextArr
-        length+=1
+        length += 1
+
+
 count = 0
 for arr in triangles():
     if count < 10:
@@ -197,43 +203,91 @@ for arr in triangles():
     else:
         break
 
-#可以直接作用于for循环的对象统称为可迭代对象：Iterable
-#可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator
 
-#mapReduce
+# 可以直接作用于for循环的对象统称为可迭代对象：Iterable
+# 可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator
+
+# mapReduce
 def normalize(name):
     return name.upper()[0:1] + name.lower()[1:]
+
 
 L1 = ['adam', 'LISA', 'barT']
 L2 = list(map(normalize, L1))
 print(L2)
 
+
 def prod(L):
     def muti(x, y):
         return x * y
-    return reduce(muti,L)
+
+    return reduce(muti, L)
+
+
 if prod([3, 5, 7, 9]) == 945:
     print('测试成功!')
 else:
     print('测试失败!')
 
 DIGITS = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9}
+
+
 def str2float(s):
     zeroIndex = s.find(".")
     if zeroIndex == -1:
-        return reduce(lambda x, y: x *10 + y,map(lambda x:DIGITS[x], s))
+        return reduce(lambda x, y: x * 10 + y, map(lambda x: DIGITS[x], s))
     else:
         sn = s.replace(".", "")
         le = len(sn)
-        return reduce(lambda x, y: x *10 + y,map(lambda x:DIGITS[x], sn))/pow(10, le) * pow(10, zeroIndex)
-print(str2float("1234"))
+        return reduce(lambda x, y: x * 10 + y, map(lambda x: DIGITS[x], sn)) / pow(10, le) * pow(10, zeroIndex)
 
-#map/filter回的是一个Iterator，也就是一个惰性序列，所以要强迫filter()完成计算结果，需要用list()函数获得所有结果并返回list。
 
-#排序
+print(str2float("1234.34"))
+
+# map/filter回的是一个Iterator，也就是一个惰性序列，所以要强迫filter()完成计算结果，需要用list()函数获得所有结果并返回list。
+
+# 排序
 L = [('Bob', 75), ('Adam', 92), ('Bart', 66), ('Lisa', 88)]
+
+
 def by_name(t):
     return t[1]
+
+
 L2 = sorted(L, key=by_name)
 print(L2)
 
+
+# 装饰器 本质上，decorator就是一个返回函数的高阶函数
+
+def log(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kw):
+        print("call %s()" % func.__name__)
+        return func(*args, **kw)
+
+    return wrapper
+
+
+def paramLog(text):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            print("%s %s()" % (text, func.__name__))
+            return func(*args, **kw)
+
+        return wrapper
+    return decorator
+
+
+@paramLog("excute")
+def sayHi():
+    print("hi")
+
+print(sayHi.__name__)
+
+#偏函数
+int2 = functools.partial(int, base=2)
+print(int2("10101"))
+
+#_abc为私有变量
