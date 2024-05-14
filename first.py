@@ -242,8 +242,6 @@ def str2float(s):
         return reduce(lambda x, y: x * 10 + y, map(lambda x: DIGITS[x], sn)) / pow(10, le) * pow(10, zeroIndex)
 
 
-print(str2float("1234.34"))
-
 # map/filter回的是一个Iterator，也就是一个惰性序列，所以要强迫filter()完成计算结果，需要用list()函数获得所有结果并返回list。
 
 # 排序
@@ -255,7 +253,6 @@ def by_name(t):
 
 
 L2 = sorted(L, key=by_name)
-print(L2)
 
 
 # 装饰器 本质上，decorator就是一个返回函数的高阶函数
@@ -284,10 +281,8 @@ def paramLog(text):
 def sayHi():
     print("hi")
 
-print(sayHi.__name__)
 
 #偏函数
 int2 = functools.partial(int, base=2)
-print(int2("10101"))
 
 #_abc为私有变量
